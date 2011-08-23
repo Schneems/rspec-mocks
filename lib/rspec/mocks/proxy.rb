@@ -1,28 +1,38 @@
 module RSpec
   module Mocks
+    # Proxies act as a barrier layer allowing you to mock and stub objects as well
     class Proxy
       class << self
+        # defaults the value of @warn_about_expectations_on_nil to true
+        # @see RSpec::Mocks::MethodDouble#warn_if_nil_class
         def warn_about_expectations_on_nil
           defined?(@warn_about_expectations_on_nil) ? @warn_about_expectations_on_nil : true
         end
-      
+
+        # allows the user to ignore warnings of setting expectations on nil
+        # @see RSpec::Mocks::MethodDouble#warn_if_nil_class
         def warn_about_expectations_on_nil=(new_value)
           @warn_about_expectations_on_nil = new_value
         end
-      
+
+        # allows the user to ignore warnings of setting expectations on nil
+        # @see RSpec::Mocks::MethodDouble#warn_if_nil_class
         def allow_message_expectations_on_nil
           @warn_about_expectations_on_nil = false
-          
+
           # ensure nil.rspec_verify is called even if an expectation is not set in the example
           # otherwise the allowance would effect subsequent examples
           RSpec::Mocks::space.add(nil) unless RSpec::Mocks::space.nil?
         end
 
+        # Sytatic sugar, the opposite of warn_about_expectations_on_nil
+        # @see RSpec::Mocks::MethodDouble#warn_if_nil_class
         def allow_message_expectations_on_nil?
           !warn_about_expectations_on_nil
         end
       end
 
+      # creates a proxy object containing another object along with additional information about the object to be proxied
       def initialize(object, name=nil, options={})
         @object = object
         @name = name
@@ -34,12 +44,22 @@ module RSpec
         @null_object = false
       end
 
+
       def null_object?
         @null_object
       end
 
       # Tells the object to ignore any messages that aren't explicitly set as
       # stubs or message expectations.
+      # @example
+      #   foo = double("foo")
+      #   foo.bar
+      #   # => Double "foo" received unexpected message :bar with (no args)
+      #
+      #   foo = double("foo").as_null_object
+      #   foo.bar
+      #   # no error is generated
+      #
       def as_null_object
         @null_object = true
         @object
@@ -53,22 +73,33 @@ module RSpec
         @already_proxied_respond_to
       end
 
-      def add_message_expectation(location, method_name, opts={}, &block)        
+      # Used to establish expectations on the caller (create mocks) about
+      # what methods the caller should receive
+      # @see RSpec::Mocks::Methods#should_receive
+      def add_message_expectation(location, method_name, opts={}, &block)
         method_double[method_name].add_expectation @error_generator, @expectation_ordering, location, opts, &block
       end
 
+      # Used to establish expectations on the caller (create mocks) about
+      # what methods the caller should not receive
+      # @see RSpec::Mocks::Methods#should__not_receive
       def add_negative_message_expectation(location, method_name, &implementation)
         method_double[method_name].add_negative_expectation @error_generator, @expectation_ordering, location, &implementation
       end
 
+      # Used to "stub out" a method no a given object
+      # @see RSpec::Mocks::Methods#stub
       def add_stub(location, method_name, opts={}, &implementation)
         method_double[method_name].add_stub @error_generator, @expectation_ordering, location, opts, &implementation
       end
-      
+
+      # @see RSpec::Mocks::Methods#unstub
       def remove_stub(method_name)
         method_double[method_name].remove_stub
       end
-      
+
+      # Calls verify on all method doubles in a proxy
+      # @see RSpec::Mocks::MethodDouble#verify
       def verify #:nodoc:
         method_doubles.each {|d| d.verify}
       ensure
@@ -86,7 +117,7 @@ module RSpec
       def has_negative_expectation?(method_name)
         method_double[method_name].expectations.detect {|expectation| expectation.negative_expectation_for?(method_name)}
       end
-      
+
       def record_message_received(method_name, *args, &block)
         @messages_received << [method_name, args, block]
       end
@@ -123,7 +154,7 @@ module RSpec
       def raise_unexpected_message_error(method_name, *args)
         @error_generator.raise_unexpected_message_error method_name, *args
       end
-      
+
     private
 
       def method_double

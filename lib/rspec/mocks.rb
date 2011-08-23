@@ -31,7 +31,7 @@ module RSpec
   #   validator.should_receive(:validate).with("02134")
   #   zipcode = Zipcode.new("02134", validator)
   #   zipcode.valid?
-  #   
+  #
   # When we declare a message expectation, we say we are "mocking" a method.
   #
   # == Mock Objects and Test Stubs
@@ -65,7 +65,7 @@ module RSpec
   # we're stubbing or mocking with it's own test-double-like method. At the
   # end of the example, RSpec verifies any message expectations, and then
   # restores the original methods.
-  # 
+  #
   # == Expecting Arguments
   #
   #   double.should_receive(:msg).with(*args)
@@ -92,7 +92,7 @@ module RSpec
   #   double.should_receive(:msg).with(1, anything(), "b") #2nd argument can be anything at all
   #   double.should_receive(:msg).with(1, ducktype(:abs, :div), "b")
   #                            #2nd argument can be object that responds to #abs and #div
-  #                                                                       
+  #
   # == Receive Counts
   #
   #   double.should_receive(:msg).once
@@ -163,10 +163,10 @@ module RSpec
   #   double.should_receive(:<<).with("illegal value").once.and_raise(ArgumentError)
   #
   # == Further Reading
-  # 
+  #
   # There are many different viewpoints about the meaning of mocks and stubs. If you are interested
   # in learning more, here is some recommended reading:
-  # 
+  #
   # * Mock Objects: http://www.mockobjects.com/
   # * Endo-Testing: http://www.mockobjects.com/files/endotesting.pdf
   # * Mock Roles, Not Objects: http://www.mockobjects.com/files/mockrolesnotobjects.pdf

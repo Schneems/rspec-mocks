@@ -24,7 +24,7 @@ module RSpec
         end
         mocks.clear
       end
-      
+
     private
       # holds all mock objects
       def mocks

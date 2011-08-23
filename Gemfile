@@ -25,6 +25,8 @@ group :development do
   gem "relish", "0.2.0"
   gem "guard-rspec", "0.1.9"
   gem "growl", "1.0.3"
+  gem "yard"
+  gem 'rdiscount'
 
   platforms :mri_18 do
     gem 'ruby-debug'

@@ -176,6 +176,13 @@ module RSpec
     class << self
       attr_accessor :space
 
+      # @param [Class] class to include RSpec::Mocks::ExampleMethods
+      #
+      # When called
+      # Includes Object with RSpec::Mocks::Methods,
+      # Class with RSpec::Mocks::AnyInstance,
+      # and the Eigenclass of the includer with
+      # RSpec::Mocks::ExampleMethods
       def setup(includer)
         Object.class_eval { include RSpec::Mocks::Methods }
         Class.class_eval  { include RSpec::Mocks::AnyInstance }
